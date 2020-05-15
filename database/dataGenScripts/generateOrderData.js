@@ -4,18 +4,18 @@ const fetch = require('node-fetch');
 const ORDER_AMOUNT = 10000;
 
 const citys = ["Aalborg", "Aarhus", "Copenhagen", "Odense", "Randers", "New York City"];
+const productsList = getProductData("productData.json");
 
-
+const phoneSet = new Set();
 
 async function generateOrderData() {
   const names = await getNames();
-  const products = getProductData("productData.json");
 
   let orderSet = new Set();
   for (let i = 0; i < ORDER_AMOUNT; i++) {
     orderSet.add({
       name: getRandomElement(names),
-      product: getRandomElement(products),
+      products: getArrayOfProducts(),
       cityTo: getRandomElement(citys),
       date: randomDate(new Date(2012, 0, 1), new Date()),
       phoneNumber: createPhoneNumber()
@@ -24,6 +24,15 @@ async function generateOrderData() {
   saveData("orderData.json", Array.from(orderSet));
   console.log("Orders data generated");
 
+}
+
+function getArrayOfProducts() {
+  let amount = Math.round(Math.random() * (10 - 1) + 1);
+  let resList = [];
+  for (let i = 0; i < amount; i++) {
+    resList.push(getRandomElement(productsList));
+  }
+  return resList;
 }
 
 function randomDate(start, end) {
@@ -49,7 +58,15 @@ async function getNames() {
 }
 
 function createPhoneNumber() {
-  return Math.round(Math.random() * (99999999 - 11111111) + 11111111)
+  let phoneNumber;
+  while (true) {
+    phoneNumber = Math.round(Math.random() * (99999999 - 11111111) + 11111111)
+    if (!phoneSet.has(phoneNumber)) {
+      phoneSet.add(phoneNumber);
+      break;
+    }
+  }
+  return phoneNumber;
 }
 
 
