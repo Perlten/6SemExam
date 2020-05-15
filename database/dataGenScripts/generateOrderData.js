@@ -22,6 +22,8 @@ async function generateOrderData() {
     })
   }
   saveData("orderData.json", Array.from(orderSet));
+  console.log("Orders data generated");
+
 }
 
 function randomDate(start, end) {

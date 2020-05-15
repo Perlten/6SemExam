@@ -35,6 +35,7 @@ function generateProductData() {
     resSet.add({ brand, size, evo, madeIn, product, price });
   }
   saveData("productData.json", Array.from(resSet));
+  console.log("Products data generated");
 }
 
 
