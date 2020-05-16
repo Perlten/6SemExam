@@ -1,3 +1,5 @@
+// cat citiesNeo4jRelations.txt | cypher - shell - u neo4j - p admin
+
 const fs = require("fs");
 
 function readData(path) {
