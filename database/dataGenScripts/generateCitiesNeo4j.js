@@ -16,7 +16,7 @@ function createCitiesData() {
 }
 
 function createCity(name, population, region) {
-    let data = `CREATE(c:City {name: "${name}", population:${population}, region:"${region}"});\n`;
+    let data = `CREATE(c:City {name: "${name}", population:"${population}", region:"${region}"});\n`;
     saveData("citiesNeo4jRelations.txt", data)
 }
 
