@@ -1,15 +1,15 @@
 const fs = require("fs");
 
-function readData(path){
+function readData(path) {
     return JSON.parse(fs.readFileSync(path));
 }
 
-function createCitiesData(){
+function createCitiesData() {
     let data = readData("cities.json")
     for (let i = 0; i < data.length; i++) {
         let city = data[i]
 
-        if(city["population"] == "") city["population"] = "unknown"
+        if (city["population"] == "") city["population"] = "unknown"
 
         createCity(city["city"], city["population"], city["admin"])
     }
@@ -32,39 +32,37 @@ function saveData(path, data) {
 
 
 let regionsConnected = {
-    Hovedstaden:"Sjælland",
-    Sjælland:"Syddanmark",
-    Syddanmark:"Midtjylland",
-    Midtjylland:"Nordjylland"
+    Hovedstaden: "Sjælland",
+    Sjælland: "Syddanmark",
+    Syddanmark: "Midtjylland",
+    Midtjylland: "Nordjylland"
 }
 
-function createRelationsBetweenCitiesBasedOnRegions(){
+function createRelationsBetweenCitiesBasedOnRegions() {
     let data = readData("cities.json")
     for (let i = 0; i < data.length; i++) {
         let counter = 0;
         let city = data[i]
-        
-        while(counter != 3){
-            console.log("hejsa")
+
+        while (counter != 3) {
             let cityFound = getRandomElement(data)
-            console.log("hejsa2")
-            if(city["admin"] == cityFound["admin"]){
-                console.log("hejsa3")
-                createRelationBetweenCities(city["name"], cityFound["name"], getRandomNumber(10, 90))
+            if (city["admin"] == cityFound["admin"]) {
+                createRelationBetweenCities(city["city"], cityFound["city"], getRandomNumber(10, 90))
                 counter++;
             }
         }
-        
-        // counter = 0;
-        
-        // while(counter != 2){
-        //     let cityFound = getRandomElement(data)
-        //     if(regionsConnected[city["admin"]] == cityFound["admin"]){
-        //         createRelationBetweenCities(city["name"], cityFound["name"], getRandomNumber(90, 200))
-        //         counter++;
-        //     }
-        // }
-        
+
+        counter = 0;
+        if (city["admin"] != "Nordjylland") {
+            while (counter != 2) {
+                let cityFound = getRandomElement(data)
+                if (regionsConnected[city["admin"]] == cityFound["admin"]) {
+                    createRelationBetweenCities(city["city"], cityFound["city"], getRandomNumber(90, 200))
+                    counter++;
+                }
+            }
+
+        }
     }
 }
 
@@ -72,8 +70,8 @@ function getRandomElement(list) {
     return list[Math.floor(Math.random() * list.length)];
 }
 
-function getRandomNumber(min, max){
+function getRandomNumber(min, max) {
     return Math.round(Math.random() * (max - min) + min)
 }
-// createCitiesData();
+createCitiesData();
 createRelationsBetweenCitiesBasedOnRegions();
