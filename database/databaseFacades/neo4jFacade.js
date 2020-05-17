@@ -31,7 +31,7 @@ async function runDijkstra(city1, city2) {
         };
       })
       let { name, population, region } = segments[segments.length - 1]["end"]["properties"];
-      nodes.push({name, population, region})
+      nodes.push({ name, population, region })
       console.log(nodes);
     })
 
@@ -78,10 +78,6 @@ async function main() {
 }
 
 main();
-// # dijkstra
-// MATCH(from: City{ name: 'Copenhagen' }), (to: City{ name:'Aalborg'})
-// CALL apoc.algo.dijkstra(from, to, 'Road', 'time') yield path as path, weight as weight
-// RETURN path, weight
 
 
 
