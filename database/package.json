@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "node-fetch": "^2.6.0"
+    "neo4j-driver": "^4.0.2",
+    "node-fetch": "^2.6.0",
+    "redis": "^3.0.2"
   }
 }
