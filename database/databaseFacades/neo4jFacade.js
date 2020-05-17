@@ -1,16 +1,19 @@
 const neo4j = require('neo4j-driver');
 
 const driver = neo4j.driver(
-  'neo4j://localhost',
-  neo4j.auth.basic('neo4j', 'admin')
+  'bolt://localhost',
+  //Insert password
+  //Perlt: admin
+  //Jesper: Jeppe123#
+  neo4j.auth.basic('neo4j', 'Jeppe123#'),
+  
 )
-
-
 
 async function runDijkstra(city1, city2) {
   return new Promise(async (resolve, reject) => {
     const session = driver.session({
-      database: "citydenmark.db"
+      //This is where we can put a database, but jesper should not
+      //database:"cities"
     });
     let res = await session.run(`
     MATCH(from: City{ name: $city1 }), (to: City{ name: $city2})
@@ -33,13 +36,45 @@ async function runDijkstra(city1, city2) {
     })
 
 
+    resolve("LOL");
+    
   })
-  resolve("LOL");
 }
+
+// async function sickOfThisShit(){
+//   var driver = neo4j.driver(
+//     'neo4j://localhost',
+//     neo4j.auth.basic('neo4j', 'Jeppe123#')
+//   )
+//   var session = driver.session({
+//   })
+//   return new Promise(async (resolve, reject) => {
+//     let city1 = "Allerød"
+//     let city2 = "Hillerød"
+  
+//     session
+//   .run(`CREATE (user:User { username: "@xxxxbestulo" })`)
+//   .then(r => {
+//     console.log("r: ", r);
+//     session.close();
+//     driver.close();
+//   })
+
+//     resolve("LOL");
+//   })
+  
+  
+//   // Close the driver when application exits.
+//   // This closes all used network connections.
+//   await driver.close()
+// }
 
 
 async function main() {
-  await runDijkstra("Copenhagen", "Hillerød");
+  let res = await runDijkstra("Copenhagen", "Frederikssund")
+  let resx = await runDijkstra("Copenhagen", "Aalborg")
+  console.log(res)
+  console.log(resx)
 }
 
 main();
