@@ -2,7 +2,7 @@ const redis = require("redis");
 
 const client = redis.createClient();
 
-const defaultTimeout = 1000 * 60 * 60 * 24 * 7; // 7 days 
+const defaultTimeout = 1000 * 60 * 60 * 24 * 1; // 1 days 
 
 client.on("error", function (error) {
   console.error(error);

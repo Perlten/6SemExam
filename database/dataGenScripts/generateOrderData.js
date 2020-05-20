@@ -1,29 +1,43 @@
 const fs = require("fs");
 const fetch = require('node-fetch');
+const neo4jFacade = require("../databaseFacades/neo4jFacade")
 
 const ORDER_AMOUNT = 10000;
 
-const citys = ["Aalborg", "Aarhus", "Copenhagen", "Odense", "Randers", "New York City"];
-const productsList = getProductData("productData.json");
+const productsList = getProductData("./productData.json");
 
 const phoneSet = new Set();
 
 async function generateOrderData() {
   const names = await getNames();
-
+  const cities = getCities("cities.json");
   let orderSet = new Set();
   for (let i = 0; i < ORDER_AMOUNT; i++) {
+    let isDelivered = i % 2 == 0 ? true : false;
+
+    let cityFrom = "Copenhagen";
+    let cityTo = getRandomElement(cities);
+
+    let route;
+    if (cityFrom == cityTo) {
+      route = [cityFrom];
+    } else {
+      route = await neo4jFacade.runDijkstra(cityFrom, cityTo);
+    }
+
     orderSet.add({
       name: getRandomElement(names),
       products: getArrayOfProducts(),
-      cityTo: getRandomElement(citys),
       date: randomDate(new Date(2012, 0, 1), new Date()),
-      phoneNumber: createPhoneNumber()
+      phoneNumber: createPhoneNumber(),
+      isDelivered,
+      cityFrom,
+      cityTo,
+      route
     })
   }
   saveData("orderData.json", Array.from(orderSet));
   console.log("Orders data generated");
-
 }
 
 function getArrayOfProducts() {
@@ -69,6 +83,10 @@ function createPhoneNumber() {
   return phoneNumber;
 }
 
+function getCities(path) {
+  let res = JSON.parse(fs.readFileSync(path));
+  return res.map(e => e.city);
+}
 
 
 function getProductData(path) {
