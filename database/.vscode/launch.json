@@ -16,12 +16,12 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Run mongoFacade",
+      "name": "Run Facade",
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "program": "${workspaceFolder}/databaseFacade/mongoFacade.js",
-      "cwd": "${workspaceFolder}/databaseFacdes/"
+      "program": "${workspaceFolder}/databaseFacades/postgresFacade.js",
+      // "cwd": "${workspaceFolder}/databaseFacdes/"
     },
     
   ]

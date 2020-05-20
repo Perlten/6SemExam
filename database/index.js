@@ -30,7 +30,7 @@ app.post('/createOrder', async function (request, response) {
     await mongoFacade.createOne(order, "orders");
     response.json(order);
   } catch (e) {
-    response.json(e);
+    response.json(e).status(400);
   }
 })
 
@@ -54,7 +54,7 @@ app.put("/updateRoad", async function (request, response) {
     }
     response.json(orderList);
   } catch (e) {
-    response.json(e);
+    response.json(e).status(400);
   }
 })
 
@@ -70,7 +70,7 @@ app.post("/createBasket", async function (request, response) {
     await redisFacade.write(key, basket);
     response.json({ basket, key });
   } catch (e) {
-    response.json(e);
+    response.json(e).status(400);
   }
 });
 
@@ -84,7 +84,7 @@ app.get("/getBasket", async function (request, response) {
     let { key } = request.body;
     response.json(await redisFacade.get(key));
   } catch (e) {
-    response.json(e);
+    response.json(e).status(400);
   }
 });
 
