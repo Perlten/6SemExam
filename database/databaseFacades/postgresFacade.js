@@ -22,7 +22,7 @@ async function getAllApprovedTransactions() {
 
 async function createPerson(person) {
   let query = "INSERT INTO accounts(phonenumber, name) VALUES($1, $2)";
-  const values = [person["phonenumber"], person["name"]];
+  const values = [person["phoneNumber"], person["name"]];
   await client.query(query, values);
 }
 

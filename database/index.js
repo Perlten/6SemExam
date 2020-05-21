@@ -104,6 +104,21 @@ app.get("/getBasket", async function (request, response) {
   }
 });
 
+/*
+{
+  name,
+  phoneNumber
+}
+*/
+app.post("/createPerson", async function (request, response) {
+  try {
+    await postgresFacade.createPerson(request.body);
+    response.json({ message: "All good" });
+  } catch (e) {
+    response.json({ message: "Could not create person" }).status(400);
+  }
+});
+
 
 async function syncConfirmedPayment() {
   let query = { paymentConfirmed: false };
@@ -117,7 +132,6 @@ async function syncConfirmedPayment() {
   }
 }
 
-// syncConfirmedPayment();
 // Check every 10 min
 setInterval(syncConfirmedPayment, 1000 * 60 * 10);
 

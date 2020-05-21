@@ -20,7 +20,7 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "program": "${workspaceFolder}/databaseFacades/postgresFacade.js",
+      "program": "${workspaceFolder}/databaseFacades/mongoFacade.js",
       // "cwd": "${workspaceFolder}/databaseFacdes/"
     },
     

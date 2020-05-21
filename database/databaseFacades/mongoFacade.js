@@ -1,6 +1,8 @@
 const MongoClient = require('mongodb').MongoClient;
 
-const url = 'mongodb://localhost:27017';
+// const url = 'mongodb://localhost:27017';
+// const dbName = 'jePerltRandomWebshop';
+const url = 'mongodb+srv://jePerltAdmin:jeppeperlt321@jeperltwebshop-azpsy.mongodb.net/test';
 const dbName = 'jePerltRandomWebshop';
 
 

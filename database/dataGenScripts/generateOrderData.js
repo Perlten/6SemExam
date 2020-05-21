@@ -2,7 +2,7 @@ const fs = require("fs");
 const fetch = require('node-fetch');
 const neo4jFacade = require("../databaseFacades/neo4jFacade")
 
-const ORDER_AMOUNT = 10000;
+const ORDER_AMOUNT = 100;
 
 const productsList = getProductData("./productData.json");
 
