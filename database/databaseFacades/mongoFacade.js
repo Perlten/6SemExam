@@ -21,16 +21,28 @@ async function createOne(object, collectionName) {
   const collection = db.collection(collectionName);
 
   return new Promise((resolve, reject) => {
-    collection.insertOne(object, (err, res) => {
+    collection.insertOne(object, (err) => {
       if (err) {
         client.close();
         reject(err);
         return;
       }
       client.close();
-      resolve(res);
+      let id = object["_id"].toHexString();
+      resolve(id);
     });
   })
+}
+
+async function get(query, collectionName) {
+  let { client, db } = await connectDatabase();
+  const collection = db.collection(collectionName);
+  try {
+    let res = await collection.find(query).toArray();
+    return res;
+  } finally {
+    client.close();
+  }
 }
 
 async function update(query, value, collectionName) {
@@ -64,4 +76,4 @@ async function findOrdersWithCityConnection(to) {
 
 
 
-module.exports = { createOne, findOrdersWithCityConnection, update };
+module.exports = { createOne, findOrdersWithCityConnection, update, get };

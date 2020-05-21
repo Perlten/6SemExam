@@ -13,7 +13,11 @@ async function generateOrderData() {
   const cities = getCities("cities.json");
   let orderSet = new Set();
   for (let i = 0; i < ORDER_AMOUNT; i++) {
-    let isDelivered = i % 2 == 0 ? true : false;
+    let isDelivered = i % 1000 == 0 ? false : true;
+    let paymentConfirmed = true;
+    if (!isDelivered) {
+      paymentConfirmed = false;
+    }
 
     let cityFrom = "Copenhagen";
     let cityTo = getRandomElement(cities);
@@ -33,7 +37,8 @@ async function generateOrderData() {
       isDelivered,
       cityFrom,
       cityTo,
-      route
+      route,
+      paymentConfirmed
     })
   }
   saveData("orderData.json", Array.from(orderSet));
