@@ -2,16 +2,24 @@ const { Pool, Client } = require('pg')
 
 
 const client = new Client({
-  user: 'postgres',
+  user: 'jePerltUser',
   host: 'localhost',
   database: 'jePerltRandomWebshop',
-  password: '',
+  password: 'jeppeperlt321',
   port: 5432,
 })
 
 client.connect();
 
 
+async function test() {
+  let query = "SELECT * from  accounts";
+  let response = await client.query(query);
+  let users = response.rows.map(e => e.name);
+  console.log(users);
+}
+
+test();
 
 async function getAllApprovedTransactions() {
   let query = "SELECT webshoporderid from  transactions t WHERE t.approved = true";

@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser')
+const cors = require('cors')
 
 const neo4jFacade = require("./databaseFacades/neo4jFacade")
 const mongoFacade = require("./databaseFacades/mongoFacade")
@@ -8,9 +9,10 @@ const postgresFacade = require("./databaseFacades/postgresFacade")
 
 const app = express();
 
+app.use(cors())
 app.use(bodyParser.json());
 
-const PORT = 3000;
+const PORT = 3001;
 
 /*
   order: {
@@ -30,6 +32,8 @@ const PORT = 3000;
 app.post('/createOrder', async function (request, response) {
   let { order, creditCardInfo } = request.body;
   try {
+    //TODO: Do this
+    // checkNameAndPhoneNumberExits();
     order["phoneNumber"] = creditCardInfo["phoneNumber"];
     order["cityFrom"] = "Copenhagen";
     order["paymentConfirmed"] = false;
@@ -77,7 +81,7 @@ app.put("/updateRoad", async function (request, response) {
 /*
   {
     key,
-    value
+    basket
   }
 */
 app.post("/createBasket", async function (request, response) {
@@ -95,9 +99,9 @@ app.post("/createBasket", async function (request, response) {
   key
 }
 */
-app.get("/getBasket", async function (request, response) {
+app.get("/getBasket/:key", async function (request, response) {
   try {
-    let { key } = request.body;
+    let { key } = request.params;
     response.json(await redisFacade.get(key));
   } catch (e) {
     response.json(e).status(400);
@@ -119,6 +123,16 @@ app.post("/createPerson", async function (request, response) {
   }
 });
 
+
+app.get("/products", async function (request, response) {
+  try {
+    let amount = request.query.amount ? parseInt(request.query.amount) : -1;
+    let products = await mongoFacade.get({}, "products", amount);
+    response.json(products);
+  } catch (e) {
+    response.json({ message: "Could no get products" }).status(400);
+  }
+});
 
 async function syncConfirmedPayment() {
   let query = { paymentConfirmed: false };

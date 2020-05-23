@@ -2,9 +2,14 @@ const MongoClient = require('mongodb').MongoClient;
 
 // const url = 'mongodb://localhost:27017';
 // const dbName = 'jePerltRandomWebshop';
-const url = 'mongodb+srv://jePerltAdmin:jeppeperlt321@jeperltwebshop-azpsy.mongodb.net/test';
+const url = 'mongodb+srv://jePerltUser:jeppeperlt321@jeperltwebshop-azpsy.mongodb.net/test';
 const dbName = 'jePerltRandomWebshop';
 
+async function test() {
+  console.log(await get({}, "orders"));
+}
+
+// test();
 
 async function connectDatabase() {
   return new Promise((resolve, reject) => {
@@ -36,11 +41,16 @@ async function createOne(object, collectionName) {
   })
 }
 
-async function get(query, collectionName) {
+async function get(query, collectionName, amount = -1) {
   let { client, db } = await connectDatabase();
   const collection = db.collection(collectionName);
   try {
-    let res = await collection.find(query).toArray();
+    let res;
+    if (amount < 1) {
+      res = await collection.find(query).toArray();
+    } else {
+      res = await collection.find(query).limit(amount).toArray();
+    }
     return res;
   } finally {
     client.close();
@@ -64,6 +74,9 @@ async function update(query, value, collectionName) {
     client.close();
   }
 }
+
+
+
 
 async function findOrdersWithCityConnection(to) {
   let { client, db } = await connectDatabase();
