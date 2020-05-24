@@ -57,6 +57,18 @@ async function get(query, collectionName, amount = -1) {
   }
 }
 
+async function getRandomProducts(amount) {
+  let { client, db } = await connectDatabase();
+  const collection = db.collection("products");
+  try {
+    let res;
+    res = await collection.aggregate([{ $sample: { size: amount } }]).toArray();
+    return res;
+  } finally {
+    client.close();
+  }
+}
+
 async function update(query, value, collectionName) {
   let { client, db } = await connectDatabase();
   const collection = db.collection(collectionName);
@@ -91,4 +103,4 @@ async function findOrdersWithCityConnection(to) {
 
 
 
-module.exports = { createOne, findOrdersWithCityConnection, update, get };
+module.exports = { createOne, findOrdersWithCityConnection, update, get, getRandomProducts };

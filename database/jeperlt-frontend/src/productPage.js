@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { createOrder } from './facade/orderFacade'
 import { getProducts } from './facade/productFacade'
 import { addToCart, getBasket, clearBasket } from './facade/basketFacade'
 import { Button, Table, Row, Col, Modal, Form } from 'react-bootstrap';
@@ -10,9 +11,7 @@ export default class ProductPage extends Component {
     this.state = {
       products: [],
       basket: [],
-      showLogin: false,
       showCreditcard: false,
-      loggedIn: null
     };
   }
 
@@ -25,27 +24,53 @@ export default class ProductPage extends Component {
     let basket = await addToCart(product);
     this.setState({ basket });
   }
+
   buyBasket = async () => {
-    this.setState({ showLogin: true });
+    this.setState({ showCreditcard: true });
   }
 
-  login = (name, phoneNumber) => {
-    this.setState({ person: { name, phoneNumber }, showCreditcard: true });
-
+  makeOrder = async (order) => {
+    /*
+  order: {
+    name,
+    products,
+    cityTo
+  }
+  creditCardInfo:  {
+    creditCard: {
+      phoneNumber,
+      verificationCode,
+      cardNumber,
+      expirationDate
+    }
+  }
+  */
+    let orderObject = {
+      order: {
+        name: order.name,
+        products: this.state.basket,
+        cityTo: order.cityTo
+      },
+      creditCardInfo: {
+        phoneNumber: order.phoneNumber,
+        verificationCode: order.verificationCode,
+        cardNumber: order.cardNumber,
+        expirationDate: order.expirationDate
+      }
+    }
+    await createOrder(orderObject);
+    clearBasket();
+    this.setState({ basket: [] });
   }
 
 
   render() {
-    let handleLoginModalClose = () => {
-      this.setState({ showLogin: false });
-    }
     let handleCreditCardModalClose = () => {
       this.setState({ showCreditcard: false });
     }
     return (
       <div>
-        <LoginModal loginCallback={this.login} showLogin={this.state.showLogin} handleCloseModal={handleLoginModalClose} />
-        <CreditcardModal showModal={this.state.showCreditcard} handleCloseModal={handleCreditCardModalClose} />
+        <CreditcardModal makeOrderCallback={this.makeOrder} showModal={this.state.showCreditcard} handleCloseModal={handleCreditCardModalClose} />
         <Row>
           <Col xs={3} >
             <BasketTable basket={this.state.basket} clearBasketCallback={() => {
@@ -70,22 +95,26 @@ class CreditcardModal extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      verificationCode: "",
-      cardNumber: "",
-      expirationDate: ""
+      verificationCode: "123",
+      cardNumber: "11111111111111111",
+      expirationDate: "11-11",
+      cityTo: "Aars",
+      phoneNumber: "28940903",
+      name: "Perlt"
     }
   }
+
 
   // verificationCode,
   // cardNumber,
   // expirationDate
 
   render() {
-    let { showModal, handleCloseModal } = this.props;
+    let { showModal, handleCloseModal, makeOrderCallback } = this.props;
     return (
       <Modal show={showModal} onHide={handleCloseModal} >
         <Modal.Header closeButton>
-          <Modal.Title>Creditcard info</Modal.Title>
+          <Modal.Title>Make order</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -97,7 +126,7 @@ class CreditcardModal extends Component {
                 type="text"
                 placeholder="Card number" />
             </Form.Group>
-            
+
             <Form.Group>
               <Form.Label>Expiration date</Form.Label>
               <Form.Control
@@ -115,48 +144,16 @@ class CreditcardModal extends Component {
                 type="text"
                 placeholder="Verification code" />
             </Form.Group>
-          </Form>
 
+            <Form.Group>
+              <Form.Label>City to</Form.Label>
+              <Form.Control
+                onChange={(e) => this.setState({ cityTo: e.target.value })}
+                value={this.state.cityTo}
+                type="text"
+                placeholder="City to" />
+            </Form.Group>
 
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={(e) => {
-            e.preventDefault();
-            console.log(this.state);
-            handleCloseModal();
-          }}>
-            Make order
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    )
-  }
-}
-
-
-
-class LoginModal extends Component {
-
-  constructor(props) {
-    super(props)
-    this.state = {
-      phoneNumber: "",
-      name: ""
-    }
-  }
-
-  render() {
-    let { showLogin, handleCloseModal, loginCallback } = this.props;
-    return (
-      <Modal show={showLogin} onHide={handleCloseModal} >
-        <Modal.Header closeButton>
-          <Modal.Title>Login</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
             <Form.Group controlId="formBasicEmail">
               <Form.Label>Name</Form.Label>
               <Form.Control onChange={(e) => this.setState({ name: e.target.value })} value={this.state.name} type="text" placeholder="Name" />
@@ -176,13 +173,13 @@ class LoginModal extends Component {
           </Button>
           <Button variant="primary" onClick={(e) => {
             e.preventDefault();
-            console.log(this.state);
-            loginCallback(this.state.name, this.state.phoneNumber);
+            makeOrderCallback(this.state);
             handleCloseModal();
           }}>
-            Login
+            Make order
           </Button>
         </Modal.Footer>
+
       </Modal>
     )
   }
@@ -206,7 +203,7 @@ function ProductTable({ products, addToCartCallback }) {
     )
   })
   return (
-    <Table striped bordered hover variant="striped bordered hover">
+    <Table striped bordered hover>
       <thead>
         <tr>
           <th>Brand</th>
@@ -240,7 +237,7 @@ function BasketTable({ basket, clearBasketCallback }) {
 
   return (
     <div>
-      <Table striped bordered hover variant="dark">
+      <Table striped bordered hover>
         <thead>
           <tr>
             <th>Brand</th>

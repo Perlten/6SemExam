@@ -1,11 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ProductPage from './productPage';
+import AdminPage from './adminPage';
 import * as serviceWorker from './serviceWorker';
+
+import {
+  HashRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
 
 ReactDOM.render(
   <React.StrictMode>
-    <ProductPage />
+    <Router>
+      <Switch>
+        <Route path="/admin">
+          <AdminPage />
+        </Route>
+        <Route path="/" exact>
+          <ProductPage />
+        </Route>
+      </Switch>
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 );

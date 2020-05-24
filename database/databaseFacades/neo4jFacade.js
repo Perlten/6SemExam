@@ -26,9 +26,10 @@ async function runDijkstra(city1, city2) {
       res.records.forEach(record => {
         let segments = record.get("path")["segments"];
         let nodes = segments.map(e => {
+          let time = e["relationship"]["properties"]["time"]["low"] ? e["relationship"]["properties"]["time"]["low"] : e["relationship"]["properties"]["time"];
           let from = e["start"]["properties"].name
           let to = e["end"]["properties"].name
-          return { from, to };
+          return { from, to, time };
         })
         resolve(nodes);
       })

@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const mongo = require('mongodb');
 
 const neo4jFacade = require("./databaseFacades/neo4jFacade")
 const mongoFacade = require("./databaseFacades/mongoFacade")
@@ -21,19 +22,17 @@ const PORT = 3001;
     cityTo
   }
   creditCardInfo:  {
-    creditCard: {
-      phoneNumber,
-      verificationCode,
-      cardNumber,
-      expirationDate
-    }
+    phoneNumber,
+    verificationCode,
+    cardNumber,
+    expirationDate
   }
 */
 app.post('/createOrder', async function (request, response) {
   let { order, creditCardInfo } = request.body;
   try {
     //TODO: Do this
-    // checkNameAndPhoneNumberExits();
+    await postgresFacade.checkNameAndPhoneNumberExits(creditCardInfo.phoneNumber, order.name);
     order["phoneNumber"] = creditCardInfo["phoneNumber"];
     order["cityFrom"] = "Copenhagen";
     order["paymentConfirmed"] = false;
@@ -127,17 +126,32 @@ app.post("/createPerson", async function (request, response) {
 app.get("/products", async function (request, response) {
   try {
     let amount = request.query.amount ? parseInt(request.query.amount) : -1;
-    let products = await mongoFacade.get({}, "products", amount);
+    let products = await mongoFacade.getRandomProducts(amount);
+    
     response.json(products);
   } catch (e) {
     response.json({ message: "Could no get products" }).status(400);
   }
 });
 
+app.get("/approvedTransactions", async function (request, response) {
+  let transactions = await postgresFacade.getAllApprovedTransactions();
+  let resList = [];
+  for (let trans of transactions) {
+    var objectId = new mongo.ObjectID(trans.webshoporderid);
+    let mongoObject = await mongoFacade.get({ isDelivered: false, _id: objectId, paymentConfirmed: true }, "orders");
+    mongoObject = mongoObject[0];
+    if (mongoObject) {
+      resList.push({ transaction: trans, order: mongoObject });
+    }
+  }
+  response.json(resList);
+});
+
 async function syncConfirmedPayment() {
   let query = { paymentConfirmed: false };
   let orders = await mongoFacade.get(query, "orders");
-  let transactions = await postgresFacade.getAllApprovedTransactions();
+  let transactions = await postgresFacade.getAllApprovedTransactionsId();
   let transactionsSet = new Set(transactions);
   for (let order of orders) {
     if (transactionsSet.has(order["_id"].toHexString())) {
@@ -147,7 +161,8 @@ async function syncConfirmedPayment() {
 }
 
 // Check every 10 min
-setInterval(syncConfirmedPayment, 1000 * 60 * 10);
+// setInterval(syncConfirmedPayment, 1000 * 60 * 1);
+setInterval(syncConfirmedPayment, 1000 * 10);
 
 
 app.listen(PORT, () => {

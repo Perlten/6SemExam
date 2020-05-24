@@ -19,12 +19,22 @@ async function test() {
   console.log(users);
 }
 
-test();
-
-async function getAllApprovedTransactions() {
+async function getAllApprovedTransactionsId() {
   let query = "SELECT webshoporderid from  transactions t WHERE t.approved = true";
   let response = await client.query(query);
   return response.rows.map(e => e.webshoporderid);
+}
+
+async function getAllApprovedTransactions() {
+  let query = "SELECT * from  transactions t WHERE t.approved = true";
+  let response = await client.query(query);
+  return response.rows.map(e => {
+    return ({
+      amount: e.amount,
+      webshoporderid: e.webshoporderid,
+      date: e.date
+    })
+  });
 }
 
 
@@ -84,6 +94,15 @@ async function createTransaction(transaction) {
   }
 }
 
+async function checkNameAndPhoneNumberExits(phoneNumber, name) {
+  let query = "SELECT * FROM accounts a WHERE a.phonenumber = $1 AND a.name = $2";
+  const values = [phoneNumber, name];
+  let response = await client.query(query, values);
+  if (response.rowCount == 0) {
+    throw "Could not find user";
+  }
+}
+
 // createTransaction({
 //   creditCard: {
 //     phoneNumber: 28940903,
@@ -94,4 +113,4 @@ async function createTransaction(transaction) {
 //   amount: 100
 // });
 
-module.exports = { createPerson, createTransaction, getAllApprovedTransactions };
+module.exports = { createPerson, createTransaction, getAllApprovedTransactions, getAllApprovedTransactionsId, checkNameAndPhoneNumberExits };
