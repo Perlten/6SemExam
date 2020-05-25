@@ -27,6 +27,11 @@ function createRelationBetweenCities(city1, city2, time) {
   saveData("citiesNeo4jRelations.txt", data)
 }
 
+for(let i = 0; i < 150000; i++){
+  let data = "neo4j"
+  saveData("neo4jDataJeppis.txt", data)
+}
+
 
 function saveData(path, data) {
   fs.appendFileSync(path, data);
