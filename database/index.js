@@ -31,7 +31,6 @@ const PORT = 3001;
 app.post('/createOrder', async function (request, response) {
   let { order, creditCardInfo } = request.body;
   try {
-    //TODO: Do this
     await postgresFacade.checkNameAndPhoneNumberExits(creditCardInfo.phoneNumber, order.name);
     order["phoneNumber"] = creditCardInfo["phoneNumber"];
     order["cityFrom"] = "Copenhagen";
