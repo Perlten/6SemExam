@@ -27,9 +27,9 @@ function createRelationBetweenCities(city1, city2, time) {
   saveData("citiesNeo4jRelations.txt", data)
 }
 
-for(let i = 0; i < 150000; i++){
+for(let i = 0; i < 180000; i++){
   let data = "neo4j"
-  saveData("neo4jDataJeppis.txt", data)
+  saveData("neo4jtest.txt", data+"\n")
 }
 
 
