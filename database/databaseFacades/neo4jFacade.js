@@ -6,7 +6,7 @@ function createDriver() {
     //Insert password
     //Perlt: admin
     //Jesper: Jeppe123#
-    neo4j.auth.basic('neo4j', 'admin'),
+    neo4j.auth.basic('neo4j', 'Jeppe123#'),
   )
 
 }
