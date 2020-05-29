@@ -38,7 +38,33 @@ async function write(key, value) {
     });
   })
 }
+async function write(key, value) {
+    return new Promise((resolve, reject) => {
+      client.set(key, JSON.stringify(value), (err, res) => {
+        if (err) {
+          reject("Could not write to redissxxxs");
+          return;
+        }
+  
+        setTimeout(() => {
+          client.del(key);
+        }, defaultTimeout);
+  
+        resolve(value);
+      });
+    })
+  }
 
-
+async function get(key) {
+    return new Promise((resolve, reject) => {
+      client.get(key, (err, res) => {
+        if (err) {
+          reject("Could not read data");
+          return;
+        }
+        resolve(JSON.parse(res));
+      })
+    })
+  }
 
 module.exports = { write, get };
