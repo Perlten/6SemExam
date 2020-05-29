@@ -26,7 +26,7 @@ async function write(key, value) {
   return new Promise((resolve, reject) => {
     client.set(key, JSON.stringify(value), (err, res) => {
       if (err) {
-        reject("Could not write to redis");
+        reject("Could not write to redissxxxs");
         return;
       }
 
