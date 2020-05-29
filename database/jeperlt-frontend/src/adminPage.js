@@ -150,8 +150,8 @@ function TransactionTable({ transactions, detailsCallback }) {
     return (
       <tr key={index}>
         <td> {trans.order.name} </td>
-        <td> {trans.order.cityTo} </td>
         <td> {trans.transaction.amount} </td>
+        <td> {trans.order.cityTo} </td>
         <td> {trans.order.phoneNumber} </td>
         <td> {new Date(trans.transaction.date).toLocaleDateString()} </td>
         <td> <Button onClick={(event) => {
