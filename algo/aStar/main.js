@@ -1,4 +1,4 @@
-const GRID_SIZE = 40;
+const GRID_SIZE = 20;
 const WIDTH = 800;
 const HEIGHT = 800;
 const NODES_IN_ROW = (WIDTH / GRID_SIZE) + 1;
@@ -56,9 +56,9 @@ function handleAStart() {
 }
 
 function distance(nodeA, nodeB) {
-  let triangleWidth = Math.abs(nodeA.x - nodeB.x);
-  let triangleHeight = Math.abs(nodeA.y - nodeB.y);
-  let res = Math.sqrt(Math.pow(triangleWidth, 2) + Math.pow(triangleHeight, 2));
+  let absX = Math.abs(nodeA.x - nodeB.x);
+  let absY = Math.abs(nodeA.y - nodeB.y);
+  let res = Math.sqrt(Math.pow(absX, 2) + Math.pow(absY, 2));
   return res;
 }
 
@@ -78,7 +78,6 @@ function heuristic(nodeA, nodeB) {
   }
 }
 
-
 function setup() {
   eventContainer = new EventContainer();
   createCanvas(WIDTH, HEIGHT);
@@ -96,6 +95,7 @@ function draw() {
     node.draw();
   }
   if (endNode.parrent) {
+    document.getElementById("totalDistance").innerText = endNode.localGoal;
     let currentNode = endNode.parrent;
     while (currentNode != startNode) {
       currentNode.isLine = true;
@@ -122,7 +122,6 @@ function mouseClicked() {
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
-
 
 function setupGrid() {
   for (let y = 0; y < HEIGHT; y += GRID_SIZE) {
@@ -262,7 +261,7 @@ class EventContainer {
     } else {
       algoText += "Dijkstra"
     }
-    
+
     document.getElementById("currentAlgo").innerText = algoText
     this.ctrlPressed = keyIsDown(17);
     this.shiftPressed = keyIsDown(16);
